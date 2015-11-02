@@ -4,20 +4,26 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import org.calmarj.sportboxrssreader.utils.RSSChannel;
-import org.calmarj.sportboxrssreader.utils.RSSParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.calmarj.sportboxrssreader.retrofit.RSS;
 
-import java.io.IOException;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.observables.AndroidObservable;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final String TAG = "MAIN";
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter mAdapter;
+
+    private Subscription mSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,21 +35,30 @@ public class MainActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        try {
-            mAdapter = new RSSAdapter(getRSSOffline(), this);
-        } catch (IOException | XmlPullParserException e) {
-            e.printStackTrace();
-        }
+        SportboxService sportboxService = ServiceFactory.createRetrofitService(SportboxService.class, SportboxService.SERVICE_ENDPOINT);
+        mSubscription = AndroidObservable.bindActivity(this, sportboxService.getFootballChannel())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Subscriber<RSS>() {
+                    @Override
+                    public void onCompleted() {
 
-        mRecyclerView.setAdapter(mAdapter);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(TAG, e.getLocalizedMessage());
+                    }
+
+                    @Override
+                    public void onNext(RSS rss) {
+                        Log.d(TAG, rss.getChannel().getTitle());
+                        mAdapter = new RSSAdapter(rss.getChannel(), getApplication());
+                        mRecyclerView.setAdapter(mAdapter);
+                    }
+                });
 
     }
 
-
-    public RSSChannel getRSSOffline() throws IOException, XmlPullParserException {
-        RSSParser rssParser = new RSSParser();
-        return rssParser.parse(this.getResources().openRawResource(R.raw.feed));
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -65,5 +80,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mSubscription.unsubscribe();
+        super.onDestroy();
     }
 }
