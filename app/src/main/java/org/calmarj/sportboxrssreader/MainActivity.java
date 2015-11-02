@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.calmarj.sportboxrssreader.utils.RSSChannel;
 import org.calmarj.sportboxrssreader.utils.RSSParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -28,15 +29,20 @@ public class MainActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new MyAdapter();
+        try {
+            mAdapter = new RSSAdapter(getRSSOffline(), this);
+        } catch (IOException | XmlPullParserException e) {
+            e.printStackTrace();
+        }
+
         mRecyclerView.setAdapter(mAdapter);
 
     }
 
 
-    public void runTest() throws IOException, XmlPullParserException {
+    public RSSChannel getRSSOffline() throws IOException, XmlPullParserException {
         RSSParser rssParser = new RSSParser();
-        rssParser.parse(this.getResources().openRawResource(R.raw.feed));
+        return rssParser.parse(this.getResources().openRawResource(R.raw.feed));
     }
 
     @Override
