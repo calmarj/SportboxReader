@@ -1,6 +1,6 @@
-package org.calmarj.sportboxrssreader;
+package org.calmarj.sportboxrssreader.retrofit;
 
-import org.calmarj.sportboxrssreader.retrofit.RSS;
+import org.calmarj.sportboxrssreader.model.RSS;
 
 import retrofit.http.GET;
 import rx.Observable;

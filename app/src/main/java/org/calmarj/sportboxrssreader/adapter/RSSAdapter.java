@@ -1,20 +1,20 @@
-package org.calmarj.sportboxrssreader;
+package org.calmarj.sportboxrssreader.adapter;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.calmarj.sportboxrssreader.retrofit.Channel;
-import org.calmarj.sportboxrssreader.retrofit.Item;
+import org.calmarj.sportboxrssreader.R;
+import org.calmarj.sportboxrssreader.activity.DetailActivity;
+import org.calmarj.sportboxrssreader.model.Channel;
+import org.calmarj.sportboxrssreader.model.Item;
 
 
-/**
- * Created by calmarj on 02.11.15.
- */
 public class RSSAdapter extends RecyclerView.Adapter<RSSAdapter.ItemViewHolder> {
 
     private Channel channel;
@@ -45,7 +45,8 @@ public class RSSAdapter extends RecyclerView.Adapter<RSSAdapter.ItemViewHolder> 
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private final TextView mTextView;
+        private final TextView mTitleTextView;
+        private final TextView mDescTextView;
 
         private Item item;
 
@@ -54,7 +55,8 @@ public class RSSAdapter extends RecyclerView.Adapter<RSSAdapter.ItemViewHolder> 
         public ItemViewHolder(View itemView, Context context) {
             super(itemView);
             this.mContext = context;
-            mTextView = (TextView) itemView.findViewById(R.id.info_text);
+            mTitleTextView = (TextView) itemView.findViewById(R.id.info_text_title);
+            mDescTextView = (TextView) itemView.findViewById(R.id.info_text_description);
             itemView.setOnClickListener(this);
         }
 
@@ -70,7 +72,8 @@ public class RSSAdapter extends RecyclerView.Adapter<RSSAdapter.ItemViewHolder> 
 
         public void bindItem(Item item) {
             this.item = item;
-            mTextView.setText(item.getTitle());
+            mTitleTextView.setText(item.getTitle());
+            mDescTextView.setText(Html.fromHtml(item.getDescription()));
         }
     }
 

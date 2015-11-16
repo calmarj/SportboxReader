@@ -1,4 +1,4 @@
-package org.calmarj.sportboxrssreader.retrofit;
+package org.calmarj.sportboxrssreader.model;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;

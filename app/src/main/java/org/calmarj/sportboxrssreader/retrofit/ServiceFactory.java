@@ -1,4 +1,4 @@
-package org.calmarj.sportboxrssreader;
+package org.calmarj.sportboxrssreader.retrofit;
 
 import retrofit.RestAdapter;
 import retrofit.converter.SimpleXMLConverter;

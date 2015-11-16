@@ -1,4 +1,4 @@
-package org.calmarj.sportboxrssreader;
+package org.calmarj.sportboxrssreader.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -6,6 +6,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.webkit.WebView;
+
+import org.calmarj.sportboxrssreader.R;
 
 public class DetailActivity extends AppCompatActivity {
 
